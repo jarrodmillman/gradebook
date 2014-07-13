@@ -5,13 +5,7 @@ import json
 import logging as log
 import traceback
 from subprocess import check_output
-
-#from check import (
-#    get_score,
-#    get_possible,
-#    get_grades,
-#    start_log,
-#)
+from rpy2.robjects import r as R
 
 
 argparser = ArgumentParser(
@@ -31,14 +25,20 @@ def main():
     start_log(logfile)
     global_vars = {}
 #    local_vars = {}
-    filename = gb_home+"/../"+login+"/"+args.assignment+"/score.py"
+    filename = gb_home+"/"+args.assignment+".py"
     with open(filename) as f:
         code = compile(f.read(), filename, 'exec')
 #        print code
         exec(code, global_vars)
 
+
+    part_names = global_vars['part_names']
+    possible = global_vars['possible']
+    parts = init_parts(part_names, possible)
+    for func_name in part_names:
+        parts[func_name]['earned'] = global_vars[func_name](args.assignment) # + argument list
+
 #    print global_vars
-    parts = global_vars['parts']
     if args.record:
         #save_grades(assignment, parts, possible)
         print 'too bad'
@@ -180,6 +180,12 @@ try:
 except KeyError: 
    print "Please set the environment variable GB_HOME"
    sys.exit(1)
+
+try:
+    from subprocess import DEVNULL # py3k
+except ImportError:
+    import os
+    DEVNULL = open(os.devnull, 'wb')
 
 if __name__ == '__main__':
     main()
