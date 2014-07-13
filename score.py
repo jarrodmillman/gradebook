@@ -1,0 +1,185 @@
+#!/usr/bin/env python
+import os, sys
+from argparse import ArgumentParser
+import json 
+import logging as log
+import traceback
+from subprocess import check_output
+
+#from check import (
+#    get_score,
+#    get_possible,
+#    get_grades,
+#    start_log,
+#)
+
+
+argparser = ArgumentParser(
+    description='Score an assignment.'
+)
+argparser.add_argument('assignment')
+argparser.add_argument(
+    '-r', '--record', action='store_true',
+    help='record score in gradebook'
+)
+
+def main():
+    args = argparser.parse_args()
+
+#    print args.assignment
+    logfile = gb_home+"/../"+login+"/"+args.assignment+"/score.log"
+    start_log(logfile)
+    global_vars = {}
+#    local_vars = {}
+    filename = gb_home+"/../"+login+"/"+args.assignment+"/score.py"
+    with open(filename) as f:
+        code = compile(f.read(), filename, 'exec')
+#        print code
+        exec(code, global_vars)
+
+#    print global_vars
+    parts = global_vars['parts']
+    if args.record:
+        #save_grades(assignment, parts, possible)
+        print 'too bad'
+    else:
+        print '='*17
+        print '(not recording) score: ' + str(get_score(parts))
+        print 'Out of: ' + str(get_possible(parts))
+        print '='*17
+        print parts
+
+
+
+def start_log(logfile):
+    log.basicConfig(filename=logfile,
+                    filemode='w',
+                    level=log.INFO)
+    return None
+
+def init_parts(part_names, possible):
+    return {key: {'earned': 0, 'possible': val}
+               for (key, val) in zip(part_names, possible)}
+
+def get_grades(filename):
+    try:
+        with open(filename) as infile:
+            grades = json.load(infile)
+    except:
+        print "Trouble loading " + filename
+        sys.exit(1)
+
+    return grades
+
+def save_grades(assignment, parts, verbose=True):
+    for d in grades:
+        if d['login']==student['login']:
+            penalty = 0
+            note = ''
+            commit = check_output(['git', 'log', '-1', '--format="%H"']).strip()[1:-1]
+            score = get_score(parts)
+            possible =  get_possible(parts)
+            if assignment in d['grades']:
+                old = d['grades'][assignment]
+                if 'penalty' in old:
+                    penalty = old['penalty']
+                if 'note' in old:
+                    note = old['note']
+                score = max(score - penalty, old['earned'])
+            d['grades'][assignment] = {'earned': score,
+                                'parts': parts,
+                                'possible': possible,
+                                'penalty': penalty,
+                                'hash': commit,
+                                'note': note }
+    with open(class_grades, 'w') as outfile:
+        json.dump(grades, outfile, sort_keys = True, indent = 4)
+    if verbose:
+        print student['login'] + ' got ' + str(score)
+        log.info("You got a %s out of %s.", str(score), str(possible))
+
+def get_score(parts):
+    return sum([parts[p]["earned"] for p in parts])
+
+def get_possible(parts):
+    return sum([parts[p]["possible"] for p in parts])
+
+def run(command, g):
+    log.info('Executed '+command)
+    try:
+        exec(command, g)
+    except:
+        log.exception('Got exception on main handler')
+        log.exception(traceback.format_exc())
+
+def correct(command, answer, points):
+    log.info('(%s points) %s is %s', points, command, answer)
+
+def wrong(command, answer, result, points):
+    log.error('(%s points) Checking %s', points, command)
+    log.error('... Expecting: %s', answer)
+    log.error('... But got:   %s', result)
+
+def check(command, answer, points, g):
+    g['os'] = os
+    try:
+        result = eval(command, g)
+    except:
+        wrong(command, answer, 'Traceback error', points)
+        log.exception('Got exception:')
+        log.exception(traceback.format_exc())
+        return 0
+    if result == answer:
+        correct(command, answer, points)
+        return points
+    else:
+        wrong(command, answer, result, points)
+        return 0
+
+def query(question, points):
+    """Ask a yes/no question via raw_input() and return their answer.
+    Modified from ActiveState 577058-query-yesno
+
+    "question" is a string that is presented to the user.
+
+    The "answer" return value is one of "True" or "False".
+    """
+    valid = {"yes":True,   "y":True,  "ye":True,
+             "no":False,   "n":False}
+    prompt = " [y/n] "
+
+    while True:
+        sys.stdout.write(question + prompt)
+        choice = raw_input().lower()
+        if choice in valid:
+            if valid[choice]:
+                correct(question, choice, points)
+                return points
+            else:
+                wrong(question, "False", choice, points)
+                return 0
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no' "\
+                             "(or 'y' or 'n').\n")
+
+try:  
+   class_grades = os.environ["GRADEBOOK"]
+except KeyError: 
+   print "Please set the environment variable GRADEBOOK"
+   sys.exit(1)
+
+student_grades = 'grades.json'
+
+grades = get_grades(class_grades)
+student = get_grades(student_grades)
+login = student['login']
+#print login
+
+try:  
+   gb_home = os.environ["GB_HOME"]
+except KeyError: 
+   print "Please set the environment variable GB_HOME"
+   sys.exit(1)
+
+if __name__ == '__main__':
+    main()
