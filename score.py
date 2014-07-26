@@ -16,16 +16,24 @@ argparser.add_argument(
     '-r', '--record', action='store_true',
     help='record score in gradebook'
 )
+argparser.add_argument(
+    '-f', '--finish', action='store_true',
+    help="only score students if they haven't been already"
+)
 
 def main():
     args = argparser.parse_args()
+    assignment = args.assignment
+
+    if args.finish:
+        return None
 
 #    print args.assignment
-    logfile = gb_home+"/../"+login+"/"+args.assignment+"/score.log"
+    logfile = gb_home+"/../"+login+"/"+assignment+"/score.log"
     start_log(logfile)
     global_vars = {}
 #    local_vars = {}
-    filename = gb_home+"/"+args.assignment+".py"
+    filename = gb_home+"/"+assignment+".py"
     with open(filename) as f:
         code = compile(f.read(), filename, 'exec')
 #        print code
@@ -36,12 +44,12 @@ def main():
     possible = global_vars['possible']
     parts = init_parts(part_names, possible)
     for func_name in part_names:
-        parts[func_name]['earned'] = global_vars[func_name](args.assignment) # + argument list
+        parts[func_name]['earned'] = global_vars[func_name](assignment) # + argument list
 
 #    print global_vars
     if args.record:
-        #save_grades(assignment, parts, possible)
-        print 'too bad'
+        save_grades(assignment, parts)
+        #print 'too bad'
     else:
         print '='*17
         print '(not recording) score: ' + str(get_score(parts))
@@ -49,7 +57,7 @@ def main():
         print '='*17
         print parts
 
-
+    return None
 
 def start_log(logfile):
     log.basicConfig(filename=logfile,
