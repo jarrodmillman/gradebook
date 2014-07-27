@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import os, sys
 from argparse import ArgumentParser
 import json 
@@ -31,11 +32,11 @@ def main():
                 return None
 
 #    print args.assignment
-    logfile = gb_home+"/../"+login+"/"+assignment+"/score.log"
+    logfile = instructor_home+"/../"+login+"/"+assignment+"/score.log"
     start_log(logfile)
     global_vars = {}
 #    local_vars = {}
-    filename = gb_home+"/"+assignment+".py"
+    filename = instructor_home+"/"+assignment+".py"
     with open(filename) as f:
         code = compile(f.read(), filename, 'exec')
 #        print code
@@ -173,11 +174,13 @@ def query(question, points):
                              "(or 'y' or 'n').\n")
 
 try:  
-   class_grades = os.environ["GRADEBOOK"]
+   gb_home = os.environ["GB_HOME"]
 except KeyError: 
-   print "Please set the environment variable GRADEBOOK"
+   print "Please set the environment variable GB_HOME"
    sys.exit(1)
 
+instructor_home = gb_home + '133/instructor'
+class_grades = gb_home + 'data/grades.json' 
 student_grades = 'grades.json'
 
 grades = get_grades(class_grades)
@@ -185,11 +188,6 @@ student = get_grades(student_grades)
 login = student['login']
 #print login
 
-try:  
-   gb_home = os.environ["GB_HOME"]
-except KeyError: 
-   print "Please set the environment variable GB_HOME"
-   sys.exit(1)
 
 try:
     from subprocess import DEVNULL # py3k

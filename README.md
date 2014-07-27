@@ -3,10 +3,9 @@ gradebook
 
 Tools for grading
 
-## Environment Variables
+## Environment Variable
 
-    export GRADEBOOK=/home/stat133/src/grader/data/grades.json
-    export GB_HOME=/home/stat133/src/grader/133/instructor
+    export GB_HOME=/home/stat133/src/grader
 
 ## Installation
 
