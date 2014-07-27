@@ -179,8 +179,8 @@ except KeyError:
    print "Please set the environment variable GB_HOME"
    sys.exit(1)
 
-instructor_home = gb_home + '133/instructor'
-class_grades = gb_home + 'data/grades.json' 
+instructor_home = gb_home + '/133/instructor'
+class_grades = gb_home + '/data/grades.json' 
 student_grades = 'grades.json'
 
 grades = get_grades(class_grades)
