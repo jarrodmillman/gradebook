@@ -26,7 +26,9 @@ def main():
     assignment = args.assignment
 
     if args.finish:
-        return None
+        for d in grades:
+            if d['login']==student['login'] and assignment in d['grades']:
+                return None
 
 #    print args.assignment
     logfile = gb_home+"/../"+login+"/"+assignment+"/score.log"
