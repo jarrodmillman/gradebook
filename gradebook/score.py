@@ -26,6 +26,9 @@ def main():
     args = argparser.parse_args()
     assignment = args.assignment
 
+    if student['status'] != 'enrolled':
+        return None
+
     if args.finish:
         for d in grades:
             if d['login']==student['login'] and assignment in d['grades']:
