@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+""" Score an assignment
+"""
+# vim: ft=python
+from __future__ import division, print_function, absolute_import
+
 
 import os, sys
 from argparse import ArgumentParser
@@ -21,6 +26,14 @@ argparser.add_argument(
     '-f', '--finish', action='store_true',
     help="only score students if they haven't been already"
 )
+argparser.add_argument(
+    '-l', '--list', action='store_true',
+    help="list parts"
+)
+argparser.add_argument(
+    '-p', '--parts', nargs='+',
+    help="only score these parts"
+)
 
 def main():
     args = argparser.parse_args()
@@ -34,34 +47,45 @@ def main():
             if d['login']==student['login'] and assignment in d['grades']:
                 return None
 
-#    print args.assignment
     logfile = instructor_home+"/../"+login+"/"+assignment+"/score.log"
     start_log(logfile)
     global_vars = {}
 #    local_vars = {}
+
     filename = instructor_home+"/"+assignment+".py"
     with open(filename) as f:
         code = compile(f.read(), filename, 'exec')
-#        print code
         exec(code, global_vars)
-
 
     part_names = global_vars['part_names']
     possible = global_vars['possible']
-    parts = init_parts(part_names, possible)
-    for func_name in part_names:
+
+    # list
+    if args.list:
+        print(' '.join(part_names))
+        return None
+
+    # set up skelton for scores
+    if args.parts:
+        if set(args.parts).issubset(part_names):
+            parts = init_parts(part_names, possible, args.parts)
+        else:
+            print("ERROR:  {} is not a subset of {}.".format(args.parts,part_names))
+            return None
+    else:
+        parts = init_parts(part_names, possible)
+
+    for func_name in parts:
         parts[func_name]['earned'] = global_vars[func_name](assignment) # + argument list
 
-#    print global_vars
     if args.record:
         save_grades(assignment, parts)
-        #print 'too bad'
     else:
-        print '='*17
-        print '(not recording) score: ' + str(get_score(parts))
-        print 'Out of: ' + str(get_possible(parts))
-        print '='*17
-        print parts
+        print('='*17)
+        print('(not recording) score: ' + str(get_score(parts)))
+        print('Out of: ' + str(get_possible(parts)))
+        print('='*17)
+        print(parts)
 
     return None
 
@@ -71,16 +95,21 @@ def start_log(logfile):
                     level=log.INFO)
     return None
 
-def init_parts(part_names, possible):
-    return {key: {'earned': 0, 'possible': val}
-               for (key, val) in zip(part_names, possible)}
+def init_parts(names, possible, parts=None):
+    if parts:
+        p = { part: {'earned': 0, 'possible': points}
+               for (part, points) in zip(names, possible) if part in parts}
+    else:
+        p = { part: {'earned': 0, 'possible': points}
+               for (part, points) in zip(names, possible)}
+    return p
 
 def get_grades(filename):
     try:
         with open(filename) as infile:
             grades = json.load(infile)
     except:
-        print "Trouble loading " + filename
+        print("Trouble loading " + filename)
         sys.exit(1)
 
     return grades
@@ -99,7 +128,11 @@ def save_grades(assignment, parts, verbose=True):
                     penalty = old['penalty']
                 if 'note' in old:
                     note = old['note']
+                if 'possible' in old:
+                    possible = old['possible']
                 score = max(score - penalty, old['earned'])
+                for k,v in old['parts'].iteritems():
+                    parts[k] = parts.get(k, v)
             d['grades'][assignment] = {'earned': score,
                                 'parts': parts,
                                 'possible': possible,
@@ -109,7 +142,7 @@ def save_grades(assignment, parts, verbose=True):
     with open(class_grades, 'w') as outfile:
         json.dump(grades, outfile, sort_keys = True, indent = 4)
     if verbose:
-        print student['login'] + ' got ' + str(score)
+        print(student['login'] + ' got ' + str(score))
         log.info("You got a %s out of %s.", str(score), str(possible))
 
 def get_score(parts):
@@ -179,7 +212,7 @@ def query(question, points):
 try:  
    gb_home = os.environ["GB_HOME"]
 except KeyError: 
-   print "Please set the environment variable GB_HOME"
+   print("Please set the environment variable GB_HOME")
    sys.exit(1)
 
 instructor_home = gb_home + '/133/instructor'
@@ -189,7 +222,6 @@ student_grades = 'grades.json'
 grades = get_grades(class_grades)
 student = get_grades(student_grades)
 login = student['login']
-#print login
 
 
 try:
