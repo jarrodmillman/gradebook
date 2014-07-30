@@ -37,13 +37,19 @@ class cd:
         os.chdir(self.savedPath)
 
 def get_grades(filename=gb_home+'/data/grades.json'):
-    with open(filename) as infile:
-        grades = json.load(infile)
+    try:
+        with open(filename) as infile:
+            grades = json.load(infile)
+    except:
+        print("Trouble loading " + filename)
+        sys.exit(1)
+
     return grades
+
 
 def save_grades(content, filename):
     with open(filename, 'w') as outfile:
-        json.dump(content, outfile, sort_keys = True, indent = 4)
+        json.dump(content, outfile, sort_keys=True, indent=4)
 
 def sh(cmd):
     log.info('$ '+' '.join(cmd))

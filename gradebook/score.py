@@ -13,6 +13,7 @@ import traceback
 from subprocess import check_output
 from rpy2.robjects import r as R
 
+from gradebook.utils import get_grades, save_grades
 
 argparser = ArgumentParser(
     description='Score an assignment.'
@@ -49,14 +50,8 @@ def main():
 
     logfile = instructor_home+"/../"+login+"/"+assignment+"/score.log"
     start_log(logfile)
-    global_vars = {}
-#    local_vars = {}
 
-    filename = instructor_home+"/"+assignment+".py"
-    with open(filename) as f:
-        code = compile(f.read(), filename, 'exec')
-        exec(code, global_vars)
-
+    global_vars = load_plugin(assignment)
     part_names = global_vars['part_names']
     possible = global_vars['possible']
 
@@ -79,7 +74,8 @@ def main():
         parts[func_name]['earned'] = global_vars[func_name](assignment) # + argument list
 
     if args.record:
-        save_grades(assignment, parts)
+        grades = update_grades(assignment, parts)
+        save_grades(grades, class_grades)
     else:
         print('='*17)
         print('(not recording) score: ' + str(get_score(parts)))
@@ -88,6 +84,14 @@ def main():
         print(parts)
 
     return None
+
+def load_plugin(assignment):
+    global_vars = {}
+    filename = instructor_home+"/"+assignment+".py"
+    with open(filename) as f:
+        code = compile(f.read(), filename, 'exec')
+        exec(code, global_vars)
+    return global_vars
 
 def start_log(logfile):
     log.basicConfig(filename=logfile,
@@ -104,17 +108,7 @@ def init_parts(names, possible, parts=None):
                for (part, points) in zip(names, possible)}
     return p
 
-def get_grades(filename):
-    try:
-        with open(filename) as infile:
-            grades = json.load(infile)
-    except:
-        print("Trouble loading " + filename)
-        sys.exit(1)
-
-    return grades
-
-def save_grades(assignment, parts, verbose=True):
+def update_grades(assignment, parts, verbose=True):
     for d in grades:
         if d['login']==student['login']:
             penalty = 0
@@ -139,11 +133,10 @@ def save_grades(assignment, parts, verbose=True):
                                 'penalty': penalty,
                                 'hash': commit,
                                 'note': note }
-    with open(class_grades, 'w') as outfile:
-        json.dump(grades, outfile, sort_keys = True, indent = 4)
     if verbose:
         print(student['login'] + ' got ' + str(score))
         log.info("You got a %s out of %s.", str(score), str(possible))
+    return grades
 
 def get_score(parts):
     return sum([parts[p]["earned"] for p in parts])
