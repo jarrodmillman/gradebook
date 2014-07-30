@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# switch to only updating individuals grades (then use the runner)
 
 from gradebook.utils import cd, get_grades, save_grades, log
 
