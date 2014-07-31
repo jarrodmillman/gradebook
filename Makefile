@@ -1,11 +1,10 @@
-# change clean to just find and remove *pyc
-clean:
-	-rm -rf build
-	-rm -rf dist
-	-rm -rf *.egg-info
+clean-pyc:
+	find . -regex ".*\.pyc" -exec rm -rf "{}" \;
 
-install:
-	pip install .
+clean: clean-pyc
 
 uninstall:
 	pip uninstall gradebook
+
+install: uninstall clean
+	pip install .

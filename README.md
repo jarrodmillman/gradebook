@@ -5,8 +5,8 @@ Tools for grading
 
 ## Environment Variable
 
-    export GB_HOME=/home/stat133/src/grader
+    export GB_HOME=<working directory for class records>
 
 ## Installation
 
-    python setup.py install --user
+    make install 
