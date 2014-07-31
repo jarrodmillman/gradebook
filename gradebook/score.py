@@ -73,13 +73,15 @@ def main():
     for func_name in parts:
         parts[func_name]['earned'] = global_vars[func_name](assignment) # + argument list
 
-    if args.record:
-        grades = update_grades(assignment, parts)
+    grades = update_grades(assignment, parts.copy())
+    if args.record:    
         save_grades(grades, class_grades)
     else:
         print('='*17)
         print('(not recording) score: ' + str(get_score(parts)))
         print('Out of: ' + str(get_possible(parts)))
+        #print('(not recording) score: ' + str(grades['score']))
+        #print('Out of: ' + str(grades['possible']))
         print('='*17)
         print(parts)
 
@@ -124,9 +126,10 @@ def update_grades(assignment, parts, verbose=True):
                     note = old['note']
                 if 'possible' in old:
                     possible = old['possible']
-                score = max(score - penalty, old['earned'])
                 for k,v in old['parts'].iteritems():
                     parts[k] = parts.get(k, v)
+                score = get_score(parts)
+                score = max(score - penalty, old['earned'])
             d['grades'][assignment] = {'earned': score,
                                 'parts': parts,
                                 'possible': possible,
