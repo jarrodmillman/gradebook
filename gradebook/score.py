@@ -13,7 +13,14 @@ import traceback
 from subprocess import check_output
 from rpy2.robjects import r as R
 
-from gradebook.utils import get_grades, save_grades
+from gradebook.utils import (
+    get_grades,
+    save_grades,
+    gb_home,
+    instructor_home,
+    grades,
+    student_grades
+)
 
 argparser = ArgumentParser(
     description='Score an assignment.'
@@ -39,13 +46,16 @@ argparser.add_argument(
 def main():
     args = argparser.parse_args()
     assignment = args.assignment
+    global grades
+    student = get_grades(student_grades)
+    login = student['login']
 
     if student['status'] != 'enrolled':
         return None
 
     if args.finish:
         for d in grades:
-            if d['login']==student['login'] and assignment in d['grades']:
+            if d['login']==login and assignment in d['grades']:
                 return None
 
     logfile = "/".join([gb_home, login, assignment, "score.log"])
@@ -73,7 +83,7 @@ def main():
     for func_name in parts:
         parts[func_name]['earned'] = global_vars[func_name](assignment) # + argument list
 
-    grades = update_grades(assignment, parts.copy())
+    grades = update_grades(login, assignment, parts.copy())
     if args.record:    
         save_grades(grades, class_grades)
     else:
@@ -110,9 +120,9 @@ def init_parts(names, possible, parts=None):
                for (part, points) in zip(names, possible)}
     return p
 
-def update_grades(assignment, parts, verbose=True):
+def update_grades(login, assignment, parts, verbose=True):
     for d in grades:
-        if d['login']==student['login']:
+        if d['login']==login:
             penalty = 0
             note = ''
             commit = check_output(['git', 'log', '-1', '--format="%H"']).strip()[1:-1]
@@ -137,7 +147,7 @@ def update_grades(assignment, parts, verbose=True):
                                 'hash': commit,
                                 'note': note }
     if verbose:
-        print(student['login'] + ' got ' + str(score))
+        print(login + ' got ' + str(score))
         log.info("You got a %s out of %s.", str(score), str(possible))
     return grades
 
@@ -205,19 +215,6 @@ def query(question, points):
             sys.stdout.write("Please respond with 'yes' or 'no' "\
                              "(or 'y' or 'n').\n")
 
-try:  
-   gb_home = os.environ["GB_HOME"]
-except KeyError: 
-   print("Please set the environment variable GB_HOME")
-   sys.exit(1)
-
-instructor_home = gb_home + '/133/instructor'
-class_grades = gb_home + '/data/grades.json' 
-student_grades = 'grades.json'
-
-grades = get_grades(class_grades)
-student = get_grades(student_grades)
-login = student['login']
 
 
 try:
