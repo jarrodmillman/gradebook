@@ -8,23 +8,6 @@ import pandas as pd
 
 from gradebook.utils import gb_home, get_grades
 
-def stem_and_leaf(x):
-    d = OrderedDict((((str(v)[:-1],' ')[v<10], Counter()) for v in sorted(x)))
-    for s in ((str(v),' '+str(v))[v<10] for v in x):
-        d[s[:-1]][s[-1]] += 1
-    m=max(len(s) for s in d)
-    for k in d:
-        print('%s%s | %s'%(' '*(m-len(k)),k,' '.join(sorted(d[k].elements()))))
-
-def get_scores(lab):
-    total = []
-    for student in grades:
-        status = student['status']
-        #if status in ['enrolled', 'audit'] and lab in student['grades']:
-        if status in ['enrolled'] and lab in student['grades']:
-            total += [student['grades'][lab]['earned']]
-    return array(total)
-
 def main():
     argv = sys.argv[1:]
     print argv
@@ -56,6 +39,23 @@ def main():
     print pd.Series(total).describe()
     print '*'*80
     stem_and_leaf(total)
+
+def stem_and_leaf(x):
+    d = OrderedDict((((str(v)[:-1],' ')[v<10], Counter()) for v in sorted(x)))
+    for s in ((str(v),' '+str(v))[v<10] for v in x):
+        d[s[:-1]][s[-1]] += 1
+    m=max(len(s) for s in d)
+    for k in d:
+        print('%s%s | %s'%(' '*(m-len(k)),k,' '.join(sorted(d[k].elements()))))
+
+def get_scores(lab):
+    total = []
+    for student in grades:
+        status = student['status']
+        #if status in ['enrolled', 'audit'] and lab in student['grades']:
+        if status in ['enrolled'] and lab in student['grades']:
+            total += [student['grades'][lab]['earned']]
+    return array(total)
 
 grades = get_grades()
 if __name__ == '__main__':
