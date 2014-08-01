@@ -48,7 +48,7 @@ def main():
             if d['login']==student['login'] and assignment in d['grades']:
                 return None
 
-    logfile = instructor_home+"/../"+login+"/"+assignment+"/score.log"
+    logfile = "/".join([gb_home, login, assignment, "score.log"])
     start_log(logfile)
 
     global_vars = load_plugin(assignment)
