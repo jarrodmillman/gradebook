@@ -13,13 +13,14 @@ import traceback
 from subprocess import check_output
 from rpy2.robjects import r as R
 
-from gradebook.utils import (
+from gradebook import (
     get_grades,
     save_grades,
     gb_home,
     instructor_home,
     grades,
-    student_grades
+    student_grades,
+    student_repos
 )
 
 argparser = ArgumentParser(
@@ -58,7 +59,7 @@ def main():
             if d['login']==login and assignment in d['grades']:
                 return None
 
-    logfile = "/".join([gb_home, login, assignment, "score.log"])
+    logfile = "/".join([student_repos, login, assignment, "score.log"])
     start_log(logfile)
 
     global_vars = load_plugin(assignment)
