@@ -6,7 +6,7 @@ from collections import OrderedDict, Counter
 from numpy import array
 import pandas as pd
 
-from gradebook.utils import gb_home, get_grades
+from gradebook import config_file, get_grades
 
 def main():
     argv = sys.argv[1:]
@@ -15,7 +15,7 @@ def main():
     
     if narg == 0:
         total = 0
-        assignments = get_grades(gb_home+'/data/config.json')
+        assignments = get_grades(config_file)
         
         #for assignment in [a for x in assignments for a in assignments[x]]
         for lab in assignments['labs']:

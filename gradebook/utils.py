@@ -6,6 +6,10 @@ from subprocess import Popen, PIPE
 import logging as log
 import logging.config
 
+from gradebook import gb_home, class_log
+logging.config.fileConfig(gb_home+'/.log.conf',
+                          defaults={'logfilename': class_log})
+
 
 class cd:
     """Context manager for changing the current working directory"""

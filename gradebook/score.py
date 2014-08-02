@@ -7,7 +7,6 @@ from __future__ import division, print_function, absolute_import
 
 import os, sys
 from argparse import ArgumentParser
-import json 
 import logging as log
 import traceback
 from subprocess import check_output

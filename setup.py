@@ -6,6 +6,7 @@ setup(
     license='BSD',
     packages=['gradebook'],
     entry_points=dict(console_scripts=['gb-clone = gradebook.clone:main',
+                                       'gb-run = gradebook.run:main',
                                        'gb-score = gradebook.score:main',
                                        'gb-stats = gradebook.stats:main',
                                        'gb-update = gradebook.update:main']),

@@ -13,6 +13,7 @@ instructor_home = gb_home + '/133/instructor'
 class_grades = gb_home + '/data/grades.json'
 class_log = gb_home+'/log/grade.log'
 student_grades = 'grades.json'
+config_file = gb_home+'/data/config.json'
 
 def get_grades(filename=class_grades):
     try:

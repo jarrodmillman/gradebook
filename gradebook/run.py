@@ -5,25 +5,28 @@ from __future__ import division, print_function, absolute_import
 
 from argparse import ArgumentParser
 
-from gradebook.utils import cd, get_grades, log, sh, gb_home
+from gradebook import grades, student_repos
+from gradebook.utils import cd, log, sh
 
 argparser = ArgumentParser(
     description='Clone student or project repos.'
 )
 argparser.add_argument('command', nargs='+',
-                       help='command to run in repos'))
-argparser.add_argument(
-    '-u', '--user', action='store_true',
-    help='only run for this user'
-)
+                       help='command to run in repos')
 
 
 def main():
     args = argparser.parse_args()
 
     log.info('#'*80)
-    log.info(' '.join(args))
+    log.info(vars(args))
     log.info('#'*80)
+#    grades = get_grades()
+    for student in grades:
+        login = student['login']
+        status = student['status']
+        if status in ['enrolled', 'audit']:
+            run(args.command, '/'.join([student_repos, login])) 
 
 def run(command, directory):
     with cd(directory):
