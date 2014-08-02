@@ -53,10 +53,8 @@ def main():
     if student['status'] != 'enrolled':
         return None
 
-    if args.finish:
-        for d in grades:
-            if d['login']==login and assignment in d['grades']:
-                return None
+    if args.finish and assignment in grades[login]['grades']:
+        return None
 
     logfile = "/".join([student_repos, login, assignment, "score.log"])
     start_log(logfile)
@@ -121,31 +119,29 @@ def init_parts(names, possible, parts=None):
     return p
 
 def update_grades(login, assignment, parts, verbose=True):
-    for d in grades:
-        if d['login']==login:
-            penalty = 0
-            note = ''
-            commit = check_output(['git', 'log', '-1', '--format="%H"']).strip()[1:-1]
-            score = get_score(parts)
-            possible =  get_possible(parts)
-            if assignment in d['grades']:
-                old = d['grades'][assignment]
-                if 'penalty' in old:
-                    penalty = old['penalty']
-                if 'note' in old:
-                    note = old['note']
-                if 'possible' in old:
-                    possible = old['possible']
-                for k,v in old['parts'].iteritems():
-                    parts[k] = parts.get(k, v)
-                score = get_score(parts)
-                score = max(score - penalty, old['earned'])
-            d['grades'][assignment] = {'earned': score,
-                                'parts': parts,
-                                'possible': possible,
-                                'penalty': penalty,
-                                'hash': commit,
-                                'note': note }
+    penalty = 0
+    note = ''
+    commit = check_output(['git', 'log', '-1', '--format="%H"']).strip()[1:-1]
+    score = get_score(parts)
+    possible =  get_possible(parts)
+    if assignment in grades[login]['grades']:
+        old = grades[login]['grades'][assignment]
+        if 'penalty' in old:
+            penalty = old['penalty']
+        if 'note' in old:
+            note = old['note']
+        if 'possible' in old:
+            possible = old['possible']
+        for k,v in old['parts'].iteritems():
+            parts[k] = parts.get(k, v)
+        score = get_score(parts)
+        score = max(score - penalty, old['earned'])
+    grades[login]['grades'][assignment] = {'earned': score,
+                        'parts': parts,
+                        'possible': possible,
+                        'penalty': penalty,
+                        'hash': commit,
+                        'note': note }
     if verbose:
         print(login + ' got ' + str(score))
         log.info("You got a %s out of %s.", str(score), str(possible))

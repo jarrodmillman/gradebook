@@ -50,7 +50,7 @@ def stem_and_leaf(x):
 
 def get_scores(lab):
     total = []
-    for student in grades:
+    for student in grades.values():
         status = student['status']
         #if status in ['enrolled', 'audit'] and lab in student['grades']:
         if status in ['enrolled'] and lab in student['grades']:

@@ -5,7 +5,8 @@ from __future__ import division, print_function, absolute_import
 
 from argparse import ArgumentParser
 
-from gradebook.utils import cd, get_grades, log, sh, gb_home
+from gradebook import get_grades, gb_home
+from gradebook.utils import cd, log, sh
 
 argparser = ArgumentParser(
     description='Clone student or project repos.'
@@ -17,16 +18,18 @@ def main():
     args = argparser.parse_args()
     directory = "/".join([gb_home, args.directory])
     config = "/".join([gb_home, args.config])
+    print(config)
     clone(directory, config)
 
 def clone(directory, info):
     grades = get_grades(info)
 
     with cd(directory, create=True):
-        for student in grades:
+        for student in grades.values():
             login = student['login']
             repo = student['url']
-            sh(['echo', 'git', 'clone', repo, login])
+            sh(['pwd'])
+            #sh(['echo', 'git', 'clone', repo, login])
 
 #proj_dir = gb_home+'/repos/projects'
 #proj_info = "/home/stat133/src/grader/data/projects.json"

@@ -9,7 +9,7 @@ def main():
     log.info('Updating student copy of their grades')
     log.info('#'*80)
 #    grades = get_grades()
-    for student in grades:
+    for student in grades.values():
         login = student['login']
         status = student['status']
         if status in ['enrolled', 'audit']:

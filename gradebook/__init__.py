@@ -1,6 +1,8 @@
+from collections import OrderedDict
 import os
 import sys
 import json
+
 
 try:
    gb_home = os.environ["GB_HOME"]
@@ -19,6 +21,7 @@ def get_grades(filename=class_grades):
     try:
         with open(filename) as infile:
             grades = json.load(infile)
+            #grades = json.load(infile, object_pairs_hook=OrderedDict)
     except:
         print("Trouble loading " + filename)
         sys.exit(1)
@@ -32,5 +35,3 @@ def save_grades(content, filename):
 
 
 grades = get_grades()
-
-
