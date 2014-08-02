@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # switch to only updating individuals grades (then use the runner)
 
-from gradebook import grades, student_grades, save_grades, gb_home
+from gradebook import grades, student_grades, save_grades, student_repos 
 from gradebook.utils import cd, log
 
 def main():
@@ -14,7 +14,7 @@ def main():
         status = student['status']
         if status in ['enrolled', 'audit']:
             del student['SID']
-            with cd(gb_home+'/133/'+login):
+            with cd(student_repos+login):
                log.info('Updating student record of grades ...')
                save_grades(student, student_grades)
 

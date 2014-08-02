@@ -10,18 +10,27 @@ except KeyError:
    print "Please set the environment variable GB_HOME"
    sys.exit(1)
 
-student_repos = gb_home+'/133'
-instructor_home = gb_home + '/133/instructor'
-class_grades = gb_home + '/data/grades.json'
-class_log = gb_home+'/log/grade.log'
-student_grades = 'grades.json'
-config_file = gb_home+'/data/config.json'
+repo_dir = gb_home + '/repos/'
+data_dir = gb_home + '/data/'
+log_dir = gb_home + '/log/'
+grade_file = 'grades.json'
+
+student_repos = repo_dir + 'students/'
+project_repos = repo_dir + 'projects/'
+instructor_home = repo_dir + 'instructor/'
+
+student_grades = grade_file
+class_grades = data_dir + grade_file
+config_file = data_dir + 'config.json'
+
+class_log = log_dir + 'grade.log'
+
 
 def get_grades(filename=class_grades):
     try:
         with open(filename) as infile:
-            grades = json.load(infile)
-            #grades = json.load(infile, object_pairs_hook=OrderedDict)
+            #grades = json.load(infile)
+            grades = json.load(infile, object_pairs_hook=OrderedDict)
     except:
         print("Trouble loading " + filename)
         sys.exit(1)
