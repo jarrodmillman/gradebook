@@ -5,11 +5,15 @@ from __future__ import division, print_function, absolute_import
 
 from argparse import ArgumentParser
 
-from gradebook import grades, student_repos
+from gradebook import grades, repo_dir
 from gradebook.utils import cd, log, sh
 
 argparser = ArgumentParser(
-    description='Clone student or project repos.'
+    description='Run command in student or project repos.'
+)
+argparser.add_argument(
+    '-p', '--projects', action='store_true',
+    help='run on projects (default: students)'
 )
 argparser.add_argument('command', nargs='+',
                        help='command to run in repos')
@@ -21,20 +25,14 @@ def main():
     log.info('#'*80)
     log.info(vars(args))
     log.info('#'*80)
-#    grades = get_grades()
-    for student in grades['students'].values():
-        login = student['login']
-        status = student['status']
+    repos = 'projects' if args.projects else 'students'
+    for repo in grades[repos].values():
+        login = repo['login']
+        status = repo.get('status', 'enrolled')
         if status in ['enrolled', 'audit']:
-            run(args.command, '/'.join([student_repos, login])) 
+            run(args.command, '/'.join([repo_dir, repos, login])) 
 
 def run(command, directory):
     with cd(directory):
        sh(command)
 
-
-#proj_dir = gb_home+'/repos/projects'
-#proj_info = "/home/stat133/src/grader/data/projects.json"
-#
-#if __name__ == "__main__":
-#    clone(proj_dir, proj_info)
