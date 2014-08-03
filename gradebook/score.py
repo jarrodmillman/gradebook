@@ -82,7 +82,10 @@ def main():
         parts[func_name]['earned'] = global_vars[func_name](assignment) # + argument list
 
     # not sure about this
-    directory = os.getcwd().split('/')[-1]
+    directory = os.getcwd().split('/')[-2]
+    print(directory)
+    print(login)
+    print(assignment)
     grades = update_grades(directory, login, assignment, parts.copy())
     if args.record:    
         save_grades(grades, class_grades)
