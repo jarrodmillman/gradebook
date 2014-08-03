@@ -17,7 +17,8 @@ grade_file = 'grades.json'
 
 student_repos = repo_dir + 'students/'
 project_repos = repo_dir + 'projects/'
-instructor_home = repo_dir + 'instructor/'
+#instructor_home = repo_dir + 'instructor/'
+instructor_home = student_repos + 'instructor/'
 
 student_grades = grade_file
 class_grades = data_dir + grade_file
@@ -40,7 +41,7 @@ def get_grades(filename=class_grades):
 
 def save_grades(content, filename):
     with open(filename, 'w') as outfile:
-        json.dump(content, outfile, sort_keys=True, indent=4)
+        json.dump(content, outfile, indent=4)
 
 
 grades = get_grades()

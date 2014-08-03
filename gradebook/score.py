@@ -30,10 +30,10 @@ argparser.add_argument(
     '-r', '--record', action='store_true',
     help='record score in gradebook'
 )
-argparser.add_argument(
-    '-f', '--finish', action='store_true',
-    help="only score students if they haven't been already"
-)
+#argparser.add_argument(
+#    '-f', '--finish', action='store_true',
+#    help="only score students if they haven't been already"
+#)
 argparser.add_argument(
     '-l', '--list', action='store_true',
     help="list parts"
@@ -50,11 +50,11 @@ def main():
     student = get_grades(student_grades)
     login = student['login']
 
-    if student['status'] != 'enrolled':
-        return None
-
-    if args.finish and assignment in grades[login]['grades']:
-        return None
+#    if student['status'] != 'enrolled':
+#        return None
+#
+#    if args.finish and assignment in grades[login]['grades']:
+#        return None
 
     logfile = "/".join([student_repos, login, assignment, "score.log"])
     start_log(logfile)
@@ -81,7 +81,9 @@ def main():
     for func_name in parts:
         parts[func_name]['earned'] = global_vars[func_name](assignment) # + argument list
 
-    grades = update_grades(login, assignment, parts.copy())
+    # not sure about this
+    directory = os.getcwd().split('/')[-1]
+    grades = update_grades(directory, login, assignment, parts.copy())
     if args.record:    
         save_grades(grades, class_grades)
     else:
@@ -118,14 +120,15 @@ def init_parts(names, possible, parts=None):
                for (part, points) in zip(names, possible)}
     return p
 
-def update_grades(login, assignment, parts, verbose=True):
+def update_grades(directory, login, assignment, parts, verbose=True):
     penalty = 0
     note = ''
     commit = check_output(['git', 'log', '-1', '--format="%H"']).strip()[1:-1]
     score = get_score(parts)
     possible =  get_possible(parts)
-    if assignment in grades[login]['grades']:
-        old = grades[login]['grades'][assignment]
+    g = grades[directory][login]['grades']
+    if assignment in g:
+        old = g[assignment]
         if 'penalty' in old:
             penalty = old['penalty']
         if 'note' in old:
@@ -136,7 +139,7 @@ def update_grades(login, assignment, parts, verbose=True):
             parts[k] = parts.get(k, v)
         score = get_score(parts)
         score = max(score - penalty, old['earned'])
-    grades[login]['grades'][assignment] = {'earned': score,
+    grades[directory][login]['grades'][assignment] = {'earned': score,
                         'parts': parts,
                         'possible': possible,
                         'penalty': penalty,

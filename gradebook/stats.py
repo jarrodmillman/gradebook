@@ -6,7 +6,7 @@ from collections import OrderedDict, Counter
 from numpy import array
 import pandas as pd
 
-from gradebook import config_file, get_grades
+from gradebook import config_file, get_grades, grades
 
 def main():
     argv = sys.argv[1:]
@@ -50,13 +50,9 @@ def stem_and_leaf(x):
 
 def get_scores(lab):
     total = []
-    for student in grades.values():
+    for student in grades['students'].values():
         status = student['status']
         #if status in ['enrolled', 'audit'] and lab in student['grades']:
         if status in ['enrolled'] and lab in student['grades']:
             total += [student['grades'][lab]['earned']]
     return array(total)
-
-grades = get_grades()
-if __name__ == '__main__':
-    main()

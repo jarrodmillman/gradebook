@@ -22,7 +22,7 @@ def main():
     log.info(vars(args))
     log.info('#'*80)
 #    grades = get_grades()
-    for student in grades.values():
+    for student in grades['students'].values():
         login = student['login']
         status = student['status']
         if status in ['enrolled', 'audit']:

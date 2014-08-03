@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='gradebook',
-    version='0.14',
+    version='0.15',
     license='BSD',
     packages=['gradebook'],
     entry_points=dict(console_scripts=['gb-clone = gradebook.clone:main',

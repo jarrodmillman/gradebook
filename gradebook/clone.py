@@ -20,7 +20,7 @@ def main():
 
 def clone(directory):
     with cd(directory, create=True):
-        for repo in grades.values():
+        for repo in grades[directory].values():
             login = repo['login']
             url = repo['url']
             sh(['git', 'clone', url, login])

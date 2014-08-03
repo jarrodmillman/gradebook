@@ -8,8 +8,7 @@ def main():
     log.info('#'*80)
     log.info('Updating student copy of their grades')
     log.info('#'*80)
-#    grades = get_grades()
-    for student in grades.values():
+    for student in grades['students'].values():
         login = student['login']
         status = student['status']
         if status in ['enrolled', 'audit']:
@@ -17,8 +16,4 @@ def main():
             with cd(student_repos+login):
                log.info('Updating student record of grades ...')
                save_grades(student, student_grades)
-
-#grades = get_grades()
-if __name__ == '__main__':
-    main()
 
