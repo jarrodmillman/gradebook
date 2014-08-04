@@ -16,12 +16,12 @@ argparser.add_argument('directory', choices=('students', 'projects'))
 
 def main():
     args = argparser.parse_args()
-    directory = os.path.join(repo_dir, args.directory)
-    clone(directory)
+    clone(args.directory)
 
-def clone(directory):
+def clone(t):
+    directory = os.path.join(repo_dir, t)
     with cd(directory, create=True):
-        for repo in grades[directory].values():
+        for repo in grades[t].values():
             login = repo['login']
             url = repo['url']
             sh(['git', 'clone', url, login])
