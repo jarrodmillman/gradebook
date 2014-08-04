@@ -15,7 +15,7 @@ data_dir = os.path.join(gb_home, 'data')
 log_dir = os.path.join(gb_home, 'log')
 grade_file = 'grades.json'
 
-instructor_home = os.path.join(repo_dir, 'students/instructor')
+instructor_home = os.path.join(repo_dir, 'instructor', 'assignments')
 
 student_grades = grade_file
 class_grades = os.path.join(data_dir, grade_file)

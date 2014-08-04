@@ -12,7 +12,7 @@ from gradebook.utils import cd, log, sh
 argparser = ArgumentParser(
     description='Clone student or project repos.'
 )
-argparser.add_argument('directory', choices=('students', 'projects'))
+argparser.add_argument('directory', choices=('students', 'projects', 'instructor'))
 
 def main():
     args = argparser.parse_args()
