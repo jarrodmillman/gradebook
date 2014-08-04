@@ -3,6 +3,7 @@
 # vim: ft=python
 from __future__ import division, print_function, absolute_import
 
+import os
 from argparse import ArgumentParser
 
 from gradebook import grades, repo_dir
@@ -15,7 +16,7 @@ argparser.add_argument('directory', choices=('students', 'projects'))
 
 def main():
     args = argparser.parse_args()
-    directory = "/".join([repo_dir, args.directory])
+    directory = os.path.join(repo_dir, args.directory)
     clone(directory)
 
 def clone(directory):

@@ -10,18 +10,18 @@ except KeyError:
    print "Please set the environment variable GB_HOME"
    sys.exit(1)
 
-repo_dir = gb_home + '/repos/'
-data_dir = gb_home + '/data/'
-log_dir = gb_home + '/log/'
+repo_dir = os.path.join(gb_home, 'repos')
+data_dir = os.path.join(gb_home, 'data')
+log_dir = os.path.join(gb_home, 'log')
 grade_file = 'grades.json'
 
-instructor_home = repo_dir + 'students/instructor/'
+instructor_home = os.path.join(repo_dir, 'students/instructor')
 
 student_grades = grade_file
-class_grades = data_dir + grade_file
-config_file = data_dir + 'config.json'
+class_grades = os.path.join(data_dir, grade_file)
+config_file = os.path.join(data_dir, 'config.json')
 
-class_log = log_dir + 'grade.log'
+class_log = os.path.join(log_dir, 'grade.log')
 
 
 def get_grades(filename=class_grades):

@@ -3,6 +3,7 @@
 # vim: ft=python
 from __future__ import division, print_function, absolute_import
 
+import os
 from argparse import ArgumentParser
 
 from gradebook import grades, repo_dir
@@ -30,7 +31,7 @@ def main():
         login = repo['login']
         status = repo.get('status', 'enrolled')
         if status in ['enrolled', 'audit']:
-            run(args.command, '/'.join([repo_dir, repos, login])) 
+            run(args.command, os.path.join(repo_dir, repos, login)) 
 
 def run(command, directory):
     with cd(directory):

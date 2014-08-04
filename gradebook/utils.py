@@ -7,7 +7,7 @@ import logging as log
 import logging.config
 
 from gradebook import gb_home, class_log
-logging.config.fileConfig(gb_home+'/.log.conf',
+logging.config.fileConfig(os.path.join(gb_home, '.log.conf'),
                           defaults={'logfilename': class_log})
 
 

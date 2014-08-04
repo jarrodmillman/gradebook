@@ -57,7 +57,7 @@ def main():
 #    if args.finish and assignment in grades[directory][login]['grades']:
 #        return None
 
-    logfile = "/".join([repo_dir, directory, login, assignment, "score.log"])
+    logfile = os.path.join(repo_dir, directory, login, assignment, "score.log")
     start_log(logfile)
 
     global_vars = load_plugin(assignment)
@@ -98,7 +98,7 @@ def main():
 
 def load_plugin(assignment):
     global_vars = {}
-    filename = instructor_home+"/"+assignment+".py"
+    filename = os.path.join(instructor_home, assignment+".py")
     with open(filename) as f:
         code = compile(f.read(), filename, 'exec')
         exec(code, global_vars)
@@ -221,6 +221,3 @@ try:
 except ImportError:
     import os
     DEVNULL = open(os.devnull, 'wb')
-
-if __name__ == '__main__':
-    main()
