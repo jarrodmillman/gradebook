@@ -15,10 +15,7 @@ data_dir = gb_home + '/data/'
 log_dir = gb_home + '/log/'
 grade_file = 'grades.json'
 
-student_repos = repo_dir + 'students/'
-project_repos = repo_dir + 'projects/'
-#instructor_home = repo_dir + 'instructor/'
-instructor_home = student_repos + 'instructor/'
+instructor_home = repo_dir + 'students/instructor/'
 
 student_grades = grade_file
 class_grades = data_dir + grade_file
@@ -30,7 +27,6 @@ class_log = log_dir + 'grade.log'
 def get_grades(filename=class_grades):
     try:
         with open(filename) as infile:
-            #grades = json.load(infile)
             grades = json.load(infile, object_pairs_hook=OrderedDict)
     except:
         print("Trouble loading " + filename)

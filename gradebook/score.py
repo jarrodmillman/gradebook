@@ -19,7 +19,7 @@ from gradebook import (
     instructor_home,
     grades,
     student_grades,
-    student_repos
+    repo_dir
 )
 
 argparser = ArgumentParser(
@@ -47,16 +47,17 @@ def main():
     args = argparser.parse_args()
     assignment = args.assignment
     global grades
-    student = get_grades(student_grades)
-    login = student['login']
+    repo = get_grades(student_grades)
+    login = repo['login']
+    directory = repo['type']
 
-#    if student['status'] != 'enrolled':
+#    if repo['status'] != 'enrolled':
 #        return None
 #
-#    if args.finish and assignment in grades[login]['grades']:
+#    if args.finish and assignment in grades[directory][login]['grades']:
 #        return None
 
-    logfile = "/".join([student_repos, login, assignment, "score.log"])
+    logfile = "/".join([repo_dir, directory, login, assignment, "score.log"])
     start_log(logfile)
 
     global_vars = load_plugin(assignment)
@@ -81,11 +82,6 @@ def main():
     for func_name in parts:
         parts[func_name]['earned'] = global_vars[func_name](assignment) # + argument list
 
-    # not sure about this
-    directory = os.getcwd().split('/')[-2]
-    print(directory)
-    print(login)
-    print(assignment)
     grades = update_grades(directory, login, assignment, parts.copy())
     if args.record:    
         save_grades(grades, class_grades)
@@ -130,6 +126,7 @@ def update_grades(directory, login, assignment, parts, verbose=True):
     score = get_score(parts)
     possible =  get_possible(parts)
     g = grades[directory][login]['grades']
+    # if directory = 'projects' will want to also update student copy of score
     if assignment in g:
         old = g[assignment]
         if 'penalty' in old:
