@@ -9,6 +9,7 @@ setup(
                                        'gb-clone = gradebook.clone:main',
                                        #'gb-collect = gradebook.collect:main',
                                        #'gb-cp = gradebook.copy:main',
+                                       #'gb-grades = gradebook.grades:main',
                                        #'gb-mkcsv = gradebook.mkcsv:main',
                                        'gb-run = gradebook.run:main',
                                        'gb-score = gradebook.score:main',
