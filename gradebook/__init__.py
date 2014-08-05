@@ -7,8 +7,7 @@ import json
 try:
    gb_home = os.environ["GB_HOME"]
 except KeyError:
-   print "Please set the environment variable GB_HOME"
-   sys.exit(1)
+   raise RuntimeError("Please set the environment variable GB_HOME")
 
 repo_dir = os.path.join(gb_home, 'repos')
 data_dir = os.path.join(gb_home, 'data')

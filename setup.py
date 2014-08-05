@@ -4,7 +4,7 @@ setup(
     name='gradebook',
     version='0.17',
     license='BSD',
-    packages=['gradebook'],
+    packages=['gradebook', 'gradebook.tests'],
     entry_points=dict(console_scripts=[#'gb-assign = gradebook.assign:main',
                                        'gb-clone = gradebook.clone:main',
                                        #'gb-collect = gradebook.collect:main',
