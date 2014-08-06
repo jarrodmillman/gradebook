@@ -49,7 +49,8 @@ def main():
     global grades
     repo = get_grades(student_grades)
     login = repo['login']
-    directory = repo['type']
+    directory = os.getcwd().split('/')[-2]
+    #directory = repo['type']
 
 #    if repo['status'] != 'enrolled':
 #        return None

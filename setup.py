@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='gradebook',
-    version='0.17',
+    version='0.18',
     license='BSD',
     packages=['gradebook', 'gradebook.tests'],
     entry_points=dict(console_scripts=[#'gb-assign = gradebook.assign:main',
