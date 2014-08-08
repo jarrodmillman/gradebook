@@ -19,6 +19,7 @@ from gradebook import (
     instructor_home,
     grades,
     student_grades,
+    class_grades,
     repo_dir
 )
 
