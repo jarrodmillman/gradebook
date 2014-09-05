@@ -12,6 +12,12 @@ Tools for grading
     make install 
 
 
+## Getting started
+
+1. https://github.com/jarrodmillman/example-class
+2. https://github.com/jarrodmillman/example-assignments
+
+
 ## Example: scoring hw5
 
 gb-update updates a single student or project repo's individual
