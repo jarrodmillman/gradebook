@@ -15,8 +15,8 @@ Important facts about the system:
   student accounts).
 * The instructor also needs a private assignments repo (e.g., using GitHub's
   educational account for organizations).
-* For each assignment (e.g., homework 1) their must be a script (e.g., hw1.py)
-  in the repos/instructor/assignments repo.
+* For each assignment (e.g., homework 1) their must be a script (e.g., `hw1.py`)
+  in the `repos/instructor/assignments` repo.
 * It isn't ready for primetime, but I am **gradually** improving it.
 
 You will need to have a keychain set up so they don't need to
