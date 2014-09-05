@@ -3,19 +3,132 @@ gradebook
 
 Tools for grading
 
-## Environment Variable
+Important facts about the system:
 
-    export GB_HOME=<working directory for class records>
+* It relies heavily on Git. So whoever is using this system will need
+  to understand how Git works and ideal should already be using Git
+  regularly for their own work.  It also requires that teaching Git
+  to your students is part of the course (and needs to be started
+  before the students get to far into the course).
+* There is one private class repo that only instructors see.
+* Every student has their own private repo (e.g., using GitHub's educational
+  student accounts).
+* The instructor also needs a private assignments repo (e.g., using GitHub's
+  educational account for organizations).
+* For each assignment (e.g., homework 1) their must be a script (e.g., hw1.py)
+  in the repos/instructor/assignments repo.
+* It isn't ready for primetime, but I am **gradually** improving it.
+
+You will need to have a keychain set up so they don't need to
+type in their username and password for each repository they want to
+push to.  You will also need to set up a GPG key so you can make
+signed tags on the repos.  You will also want to make sure it is
+in your keychain as well.
 
 ## Installation
 
-    make install 
+The first time you install:
 
+    pip install
+
+To update (after a `git pull` for instance):
+
+    make install 
 
 ## Getting started
 
+You may wish to look through these example repos before reading further:
+
 1. https://github.com/jarrodmillman/example-class
 2. https://github.com/jarrodmillman/example-assignments
+
+## Creating a class repo
+
+Here is what a bare minimum private class repo should look like initially:
+
+```
+    .
+    ├── .git
+    ├── .gitignore
+    ├── .log.conf
+    ├── data
+    │   └── grades.json
+    └── log
+        └── README.md
+```
+
+You can initially start your repo using the files in the `example-class`
+repo.
+
+Next you will need to populate `data/grades.json` with something like:
+
+```
+{
+    "instructor": {
+        "assignments": {
+            "login": "assignments", 
+            "url": "git@github.com:jarrodmillman/example-assignments.git", 
+            "type": "instructor"
+        }
+    }, 
+    "projects": {
+        "jarrodmillman": {
+            "login": "jarrodmillman", 
+            "team": [
+                "jarrodmillman"
+            ], 
+            "url": "git@github.com:jarrodmillman/example-project.git", 
+            "type": "projects"
+        }
+    }, 
+    "students": {
+        "student1": {
+            "login": "student1", 
+            "status": "enrolled", 
+            "url": "git@github.com:jarrodmillman/example-student.git", 
+            "type": "students"
+        }
+    }
+}
+```
+
+You will need to make changes to the above to reflect the actual information
+for your class.
+
+For more details about how you might populate all the student repo information,
+please see [data/README.md](https://github.com/jarrodmillman/example-class/blob/master/data/README.md)
+
+## Environment Variable
+
+At this point, you will need to set an environment variable with the path to your
+class repository on your local filesystem.
+
+    export GB_HOME=<working directory for class records>
+
+Once you've set `GB_HOME` and populated `data/grades.json`, you
+can use `gb-clone students` and `gb-clone instructor` to create
+the `repos/students/...` and repos/instructor/...` directories
+and clone the corresponding repos into those directories.
+
+```
+    .
+    ├── data
+    ├── log 
+    └── repos
+        ├── instructor
+        │   └── assignments
+        │       ├── hw1
+        │       │   ├── ex1-data.csv
+        │       │   ├── ex1.r
+        │       │   └── ex1-sol.r
+        │       └── hw1.py
+        └── students
+            └── student1
+                ├── .git
+                ├── .gitignore
+                └── README.md
+```
+
 
 
 ## Example: scoring hw5
