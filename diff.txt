@@ -1,0 +1,11 @@
+diff -r gradebook1/gradebook/stats.py gradebook/gradebook/stats.py
+56,61c56,57
+<         #print(student)
+<         try:
+<             if  lab in student['grades']:
+<                 total += [student['grades'][lab]['earned']]
+<         except:
+<             pass
+---
+>         if status in ['enrolled'] and lab in student['grades']:
+>             total += [student['grades'][lab]['earned']]
