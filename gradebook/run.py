@@ -16,6 +16,10 @@ argparser.add_argument(
     '-p', '--projects', action='store_true',
     help='run on projects (default: students)'
 )
+argparser.add_argument(
+    '-s', '--select', action='store',
+    help='only run on the specified section'
+)
 argparser.add_argument('command', nargs='+',
                        help='command to run in repos')
 
@@ -27,13 +31,18 @@ def main():
     log.info(vars(args))
     log.info('#'*80)
     repos = 'projects' if args.projects else 'students'
+    
     for repo in grades[repos].values():
         login = repo['login']
         status = repo.get('status', 'enrolled')
-        if status in ['enrolled', 'audit']:
+        if args.select:
+            selected = repo['section'] == args.select
+        else:
+            selected = True
+        if selected and status in ['enrolled', 'audit']:
             run(args.command, os.path.join(repo_dir, repos, login)) 
 
 def run(command, directory):
     with cd(directory):
-       sh(command)
+        sh(command)
 
