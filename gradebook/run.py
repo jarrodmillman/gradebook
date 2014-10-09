@@ -39,10 +39,10 @@ def main():
             try:
                 selected = repo['section'] == args.select
             except KeyError:
-                pass
+                print(repo['login'])
         else:
             selected = True
-        if selected and status in ['enrolled', 'audit']:
+        if selected and status in ['enrolled', 'audit', 'unenrolled']:
             run(args.command, os.path.join(repo_dir, repos, login)) 
 
 def run(command, directory):
