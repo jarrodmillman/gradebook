@@ -43,7 +43,7 @@ def main():
             directory = os.path.join(repo_dir, repos, login)
             command = args.command
             with cd(directory):
-              if command[0] == "gb-score":
-                  sh(command, capture_output=False)
-              else:
-                  sh(command)
+                if command[0] == "gb-score":
+                    sh(command, capture_output=False)
+                else:
+                    sh(command)
