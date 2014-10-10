@@ -13,28 +13,31 @@ logging.config.fileConfig(os.path.join(gb_home, '.log.conf'),
 
 class cd:
     """Context manager for changing the current working directory"""
-    def __init__(self, newPath, create=False):
-        self.newPath = newPath
+    def __init__(self, new_path, create=False):
+        self.new_path = new_path
         if create:
             try: 
-                os.makedirs(newPath)
+                os.makedirs(new_path)
             except OSError:
-                if not os.path.isdir(newPath):
+                if not os.path.isdir(new_path):
                     raise
 
     def __enter__(self):
-        self.savedPath = os.getcwd()
-        os.chdir(self.newPath)
-        log.info('$ cd '+self.newPath)
+        self.saved_path = os.getcwd()
+        os.chdir(self.new_path)
+        log.info('$ cd '+self.new_path)
 
     def __exit__(self, etype, value, traceback):
-        os.chdir(self.savedPath)
+        os.chdir(self.saved_path)
 
-def sh(cmd):
+def sh(cmd, capture_output=True):
     log.info('$ '+' '.join(cmd))
     print '$ ', ' '.join(cmd)
     try:
-        p = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        kwargs = {}
+        if capture_output:
+            kwargs = {'stdout':PIPE, 'stderr':PIPE}
+        p = Popen(cmd, **kwargs)
         stdout, stderr = p.communicate()
         if stdout:
             log.info(stdout)

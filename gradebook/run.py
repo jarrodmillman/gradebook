@@ -40,9 +40,10 @@ def main():
         else:
             selected = True
         if selected and status in ['enrolled', 'audit']:
-            run(args.command, os.path.join(repo_dir, repos, login)) 
-
-def run(command, directory):
-    with cd(directory):
-        sh(command)
-
+            directory = os.path.join(repo_dir, repos, login)
+            command = args.command
+            with cd(directory):
+                if command[0] == "gb-score":
+                    sh(command, capture_output=False)
+                else:
+                    sh(command)
