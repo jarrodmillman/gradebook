@@ -36,7 +36,10 @@ def main():
         login = repo['login']
         status = repo.get('status', 'enrolled')
         if args.select:
-            selected = repo['section'] == args.select
+            try:
+                selected = repo['section'] == args.select
+            except KeyError:
+                pass
         else:
             selected = True
         if selected and status in ['enrolled', 'audit', 'unenrolled']:
