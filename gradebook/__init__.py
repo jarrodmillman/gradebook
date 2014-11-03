@@ -19,6 +19,7 @@ instructor_home = os.path.join(repo_dir, 'instructor', 'assignments')
 student_grades = grade_file
 class_grades = os.path.join(data_dir, grade_file)
 config_file = os.path.join(data_dir, 'config.json')
+csv_file = os.path.join(data_home, 'grades.csv')
 
 class_log = os.path.join(log_dir, 'grade.log')
 
