@@ -59,7 +59,7 @@ def main():
 #    if args.finish and assignment in grades[directory][login]['grades']:
 #        return None
 
-    logfile = os.path.join(repo_dir, directory, login, assignment, "score.log")
+    logfile = os.path.join(repo_dir, directory, login, assignment+"-score.log")
     start_log(logfile)
 
     global_vars = load_plugin(assignment)

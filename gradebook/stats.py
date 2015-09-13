@@ -18,16 +18,10 @@ def main():
         assignments = get_grades(config_file)
         
         #for assignment in [a for x in assignments for a in assignments[x]]
-        for lab in assignments['labs']:
-            total += get_scores(lab)
+        for reading in assignments['readings']:
+            total += get_scores(reading)
         for homework in assignments['homeworks']:
             total += get_scores(homework)
-        for project in assignments['projects']:
-            total += get_scores(project)
-        for midterm in assignments['midterms']:
-            total += get_scores(midterm)
-        for final in assignments['finals']:
-            total += get_scores(final)
     
     else:
         lab = argv[0]
