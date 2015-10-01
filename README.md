@@ -72,10 +72,10 @@ Next you will need to populate `data/grades.json` with something like:
         }
     }, 
     "projects": {
-        "jarrodmillman": {
-            "login": "jarrodmillman", 
+        "teamname": {
+            "login": "teamname", 
             "team": [
-                "jarrodmillman"
+                "github_user1", "github_user2", "github_user3"
             ], 
             "url": "git@github.com:jarrodmillman/example-project.git", 
             "type": "projects"
