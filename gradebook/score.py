@@ -137,7 +137,7 @@ def update_grades(directory, login, assignment, parts, verbose=True):
             note = old['note']
         if 'possible' in old:
             possible = old['possible']
-        for k,v in old['parts'].iteritems():
+        for k,v in old['parts'].items():
             parts[k] = parts.get(k, v)
         score = get_score(parts)
         score = max(score - penalty, old['earned'])
@@ -204,7 +204,7 @@ def query(question, points):
 
     while True:
         sys.stdout.write(question + prompt)
-        choice = raw_input().lower()
+        choice = input().lower()
         if choice in valid:
             if valid[choice]:
                 correct(question, choice, points)

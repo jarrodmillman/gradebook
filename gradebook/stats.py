@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 import sys
 from collections import OrderedDict, Counter
@@ -10,7 +11,7 @@ from gradebook import config_file, get_grades, grades
 
 def main():
     argv = sys.argv[1:]
-    print argv
+    print(argv)
     narg = len(argv)
     
     if narg == 0:
@@ -27,11 +28,11 @@ def main():
         lab = argv[0]
         total = get_scores(lab)
     
-    print '*'*80
-    print total
-    print '*'*80
-    print pd.Series(total).describe()
-    print '*'*80
+    print('*'*80)
+    print(total)
+    print('*'*80)
+    print(pd.Series(total).describe())
+    print('*'*80)
     stem_and_leaf(total)
 
 def stem_and_leaf(x):
