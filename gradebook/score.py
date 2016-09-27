@@ -4,13 +4,17 @@
 # vim: ft=python
 from __future__ import division, print_function, absolute_import
 
-
 import os, sys
 from argparse import ArgumentParser
 import logging as log
 import traceback
 from subprocess import check_output
 from rpy2.robjects import r as R
+
+try:
+    raw_import
+except NameError:
+    raw_import = input
 
 from gradebook import (
     get_grades,
@@ -137,7 +141,7 @@ def update_grades(directory, login, assignment, parts, verbose=True):
             note = old['note']
         if 'possible' in old:
             possible = old['possible']
-        for k,v in old['parts'].iteritems():
+        for k,v in old['parts'].items():
             parts[k] = parts.get(k, v)
         score = get_score(parts)
         score = max(score - penalty, old['earned'])

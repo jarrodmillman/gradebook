@@ -1,5 +1,6 @@
 # emacs: -*- mode: python-mode; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
+from __future__ import print_function
 
 import os
 from subprocess import Popen, PIPE
@@ -32,7 +33,7 @@ class cd:
 
 def sh(cmd, capture_output=True):
     log.info('$ '+' '.join(cmd))
-    print '$ ', ' '.join(cmd)
+    print('$ ', ' '.join(cmd))
     try:
         kwargs = {}
         if capture_output:
@@ -40,10 +41,12 @@ def sh(cmd, capture_output=True):
         p = Popen(cmd, **kwargs)
         stdout, stderr = p.communicate()
         if stdout:
+            stdout = stdout.decode('latin1')
             log.info(stdout)
-            print stdout
+            print(stdout)
         if stderr:
+            stderr = stderr.decode('latin1')
             log.error(stderr)
-    except Exception, exc:
+    except Exception as exc:
         log.warn("error while processing item: %s", exc)
 

@@ -31,15 +31,14 @@ def main():
     log.info(vars(args))
     log.info('#'*80)
     repos = 'projects' if args.projects else 'students'
-    
+
     for repo in grades[repos].values():
         login = repo['login']
         status = repo.get('status', 'enrolled')
         if args.select:
-            try:
-                selected = repo['section'] == args.select
-            except KeyError:
-                pass
+            if 'section' not in repo:
+                raise RuntimeError("No section in repo; cannot select")
+            selected = repo['section'] == args.select
         else:
             selected = True
         if selected and status in ['enrolled', 'audit', 'unenrolled']:
