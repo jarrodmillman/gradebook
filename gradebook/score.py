@@ -4,13 +4,17 @@
 # vim: ft=python
 from __future__ import division, print_function, absolute_import
 
-
 import os, sys
 from argparse import ArgumentParser
 import logging as log
 import traceback
 from subprocess import check_output
 from rpy2.robjects import r as R
+
+try:
+    raw_import
+except NameError:
+    raw_import = input
 
 from gradebook import (
     get_grades,
@@ -204,7 +208,7 @@ def query(question, points):
 
     while True:
         sys.stdout.write(question + prompt)
-        choice = input().lower()
+        choice = raw_input().lower()
         if choice in valid:
             if valid[choice]:
                 correct(question, choice, points)
