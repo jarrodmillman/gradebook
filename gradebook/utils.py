@@ -41,9 +41,11 @@ def sh(cmd, capture_output=True):
         p = Popen(cmd, **kwargs)
         stdout, stderr = p.communicate()
         if stdout:
+            stdout = stdout.decode('latin1')
             log.info(stdout)
             print(stdout)
         if stderr:
+            stderr = stderr.decode('latin1')
             log.error(stderr)
     except Exception as exc:
         log.warn("error while processing item: %s", exc)
