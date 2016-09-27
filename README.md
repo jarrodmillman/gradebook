@@ -41,6 +41,9 @@ You may wish to look through these example repos before reading further:
 
 1. https://github.com/jarrodmillman/example-class
 2. https://github.com/jarrodmillman/example-assignments
+3. https://github.com/jarrodmillman/example-student
+
+You will most likely want to keep all of the above repos private.
 
 ## Creating a class repo
 
@@ -98,6 +101,9 @@ for your class.
 For more details about how you might populate all the student repo information,
 please see [data/README.md](https://github.com/jarrodmillman/example-class/blob/master/data/README.md)
 
+If you are using GitHub, you may find this useful:
+  https://github.com/education/teachers_pet
+
 ## Environment Variable
 
 At this point, you will need to set an environment variable with the path to your
@@ -129,7 +135,110 @@ and clone the corresponding repos into those directories.
                 └── README.md
 ```
 
+## Creating a student repo
 
+Each private student (or project) repo needs a copy of their individual record
+from the class record.  This file should be named `grades.json`.
+
+For example, if this
+
+```
+{
+    "instructor": {
+        "assignments": {
+            "login": "assignments",
+            "url": "git@github.com:jarrodmillman/example-assignments.git",
+            "type": "instructor"
+        }
+    },
+    "projects": {
+        "teamname": {
+            "login": "teamname",
+            "team": [
+                "github_user1", "github_user2", "github_user3"
+            ],
+            "url": "git@github.com:jarrodmillman/example-project.git",
+            "type": "projects"
+        }
+    },
+    "students": {
+        "student1": {
+            "login": "student1",
+            "status": "enrolled",
+            "url": "git@github.com:jarrodmillman/example-student.git",
+            "type": "students"
+        }
+    }
+}
+```
+
+is the class record, then the student record would be
+
+```
+{
+    "login": "student1",
+    "status": "enrolled",
+    "url": "git@github.com:jarrodmillman/example-student.git",
+    "type": "students"
+}
+```
+
+## Creating an assignments repo
+
+For each assignment, create a subdirectory and a corresponding Python at the
+top-level of the assignment repository.
+The subdirectories contain the assignment (e.g.,
+instructions, date, the file students were to complete, solutions) and
+the corresponding Python file is the grading script, which is loaded
+and run by gradebook's `load_plugin` function.
+
+For example, in
+  https://github.com/jarrodmillman/example-assignments/tree/master/hw1
+you will find four exercise files (e.g, `ex1.r`), four solution files
+(e.g., `ex1_sol.r`), and test data (e.g., `ex1-tests.rda`).  The
+students are given the exercise files and test data.
+They then fill-in the exercise file.  Here is a summary of a typical
+student workflow:
+  http://www.jarrodmillman.com/stat133-summer2014/workflow.html
+
+Let's look at one of the exercise files for `hw1`:
+  https://github.com/jarrodmillman/example-assignments/blob/master/hw1/ex1.r
+At the top of the file, we load a unit test library (I would use
+`testthat` now) and some test data.  The file then consists of
+instructions in comments and some function stubs.  Here is some
+information about R functions (including unit testing) that we gave
+the students:
+  http://www.jarrodmillman.com/stat133-summer2014/notes3.html
+
+Once the assignments were submitted, we would grade them using:
+  https://github.com/jarrodmillman/example-assignments/blob/master/hw1.py
+The first 14 lines are mostly boilerplate code.  The assignment
+specific part begins on line 16:
+
+    part_names = ['ex1', 'ex2', 'ex3', 'ex4']
+    possible = [6, 8, 8, 8]
+
+Each item in `part_name` corresponds to an assignment file (e.g.,
+'ex1' corresponds to `hw1/ex1.r` as well as a grading function `ex1`
+in `hw1.py`) and the corresponding item in the `possible` list
+indicates the total number of possible points for that part of the
+assignment.  The remainder of the file contains one function for each
+part of the assignment.  For example, the function `ex1` on line 22
+scores the first part of the assignment.  If you look at the function
+body, you will see that it first attempts to source the submitted
+code.  Next it makes sure any generated graphics are saved to a file
+(i.e., `R('graphics.off()')` on line 30).  Then it loads the test
+data.  Finally, it runs some tests and increments the score when the
+tests pass.  For example, on line 33 you will see:
+
+    score += check("R('all.equal(outlier.cutoff.t, outlierCutoff(ex1.test))')[0]", True, 2, g)
+
+The `check` function checks whether the student's submitted
+`outlierCutoff` function returns the expected result.  If so, `score`
+is incremented by 2 (i.e., the third argument to the check function).
+The last argument is the global namespace (i.e., dictionary), which is
+where the `check` function finds the objects (e.g., the
+`outlierCutoff` function) sourced from the student assignment.
 
 ## Example: scoring hw5
 
